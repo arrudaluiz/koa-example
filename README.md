@@ -13,3 +13,14 @@ npm install 7.6
 npm i koa
 ```
 
+## Rodar exemplo
+
+```bash
+# instalar dependências
+npm install
+
+# iniciar servidor na porta 3000
+npm run dev
+```
+
+Obs.: as rotas podem ser importadas no Postman com o arquio `postman.json`.

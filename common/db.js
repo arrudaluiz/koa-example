@@ -1,13 +1,7 @@
-'use strict';
+const Sequelize = require('sequelize');
+const sequelize = new Sequelize({
+  dialect: 'sqlite',
+  storage: './database.sqlite'
+})
 
-const levelup = require('levelup');
-const memdown = require('memdown');
-
-// const db = levelup('/', {
-//   valueEncoding: 'json',
-//   db: memdown
-// });
-
-const db = levelup(memdown());
-
-module.exports = db;
+module.exports = sequelize;

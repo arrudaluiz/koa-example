@@ -1,8 +1,6 @@
-'use strict';
-
 const task = require('./controllers/task');
 
-module.exports = function routes(app) {
+module.exports = (app) => {
   app.get('/tasks', task.list);
   app.get('/tasks/:id', task.read);
   app.post('/tasks', task.create);

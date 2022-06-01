@@ -1,65 +1,154 @@
-'use strict';
-
-const luxon = require('luxon');
-
+const db = require('../common/db');
 const Task = require('../models/task');
 
-const status = {
+const taskStatus = {
   TODO: 'to do',
   DOING: 'doing',
   DONE: 'done',
 };
 
-exports.list = function* () {
-  this.body = yield Task.list();
-};
+exports.list = async (ctx) => {
+  try {
+    const tasks = await Task.findAll();
+    if (!tasks) {
+      throw { status: 404, message: "can't find tasks" };
+    }
 
-exports.read = function* () {
-  const { id } = this.params;
-  this.body = yield Task.read(id);
-};
-
-exports.create = function* () {
-  const { text } = this.request.body;
-
-  if (!text) {
-    this.status = 400;
-    this.body = { success: false, message: 'text required' };
-    return;
+    ctx.response.status = 200;
+    ctx.response.body = { success: true, count: tasks.length, tasks };
+  } catch (error) {
+    console.error(`Error: ${error.message}`);
+    ctx.response.status = error.status;
+    ctx.response.body = { success: false, message: error.message };
   }
-
-  const createdAt = luxon.DateTime.now().setLocale('pt-BR');
-  const updatedAt = createdAt;
-  const task = { text, status: status.TODO, createdAt, updatedAt };
-
-  const id = yield Task.insert(task);
-  this.body = { id: id };
-  this.status = 200;
 };
 
-exports.update = function* () {
-  const { id, text, status } = this.request.body;
+exports.read = async (ctx) => {
+  const { id } = ctx.request.params;
 
-  if (!(text || status)) {
-    this.status = 400;
-    this.body = { success: false, message: 'nothing to update' };
-    return;
+  try {
+    if (!id) {
+      throw { status: 400, message: 'id required!' };
+    }
+
+    const task = await Task.findOne({ where: { id } });
+    if (!task) {
+      throw { status: 404, message: "can't find the requested task!" };
+    }
+
+    ctx.response.status = 200;
+    ctx.response.body = { success: true, task };
+  } catch (error) {
+    console.error(`Error: ${error.message}`);
+    ctx.response.status = error.status;
+    ctx.response.body = { success: false, message: error.message };
   }
-
-  const updatedAt = luxon.DateTime.now().setLocale('pt-BR');
-  const task = { text, status: status.TODO, updatedAt };
-
-  yield Task.update(id, task);
-  this.status = 200;
 };
 
-exports.clear = function* () {
-  yield Task.clear();
-  this.status = 200;
+exports.create = async (ctx) => {
+  const { text } = ctx.request.body;
+
+  try {
+    if (!text) {
+      throw { status: 400, message: 'text required!' };
+    }
+
+    const task = await Task.create({ text, status: taskStatus.TODO });
+    if (!task) {
+      throw { status: 400, message: 'task not created!' };
+    }
+
+    ctx.response.status = 200;
+    ctx.response.body = { success: true, task };
+  } catch (error) {
+    console.error(`Error: ${error.message}`);
+    ctx.response.status = error.status;
+    ctx.response.body = { success: false, message: error.message };
+  }
 };
 
-exports.delete = function* () {
-  const { id } = this.params;
-  yield Task.delete(id);
-  this.status = 200;
+exports.update = async (ctx) => {
+  const { id } = ctx.request.params;
+  const { text, status } = ctx.request.body;
+
+  try {
+    console.log(status);
+    if (!id) {
+      throw { status: 400, message: 'id required!' };
+    }
+
+    // no changes
+    if (!(text || status)) {
+      throw { status: 400, message: 'nothing to update!' };
+    }
+
+    // validate status if changed
+    if (status) {
+      const isValidStatus = Object.values(taskStatus).includes(status);
+
+      if (!isValidStatus) {
+        throw { status: 400, message: 'status not valid!' };
+      }
+    }
+
+    // worth to call database
+    const foundTask = await Task.findOne({ where: { id } });
+    if (!foundTask) {
+      throw { status: 404, message: "can't find the requested task" };
+    }
+
+    // update status
+    if (status && status !== foundTask.status) {
+      foundTask.status = status;
+    }
+
+    // update text
+    if (text && text !== foundTask.text) {
+      foundTask.text = text;
+    }
+
+    const task = await foundTask.save();
+
+    ctx.response.status = 200;
+    ctx.response.body = { success: true, task };
+  } catch (error) {
+    console.error(`Error: ${error.message}`);
+    ctx.response.status = error.status;
+    ctx.response.body = { success: false, message: error.message };
+  }
+};
+
+exports.clear = async (ctx) => {
+  try {
+    const deleted = await Task.destroy({ where: { status: 'done' } });
+
+    ctx.response.status = 200;
+    ctx.response.body = { success: true, deleted };
+  } catch (error) {
+    console.error(`Error: ${error.message}`);
+    ctx.response.status = error.status;
+    ctx.response.body = { success: false, message: error.message };
+  }
+};
+
+exports.delete = async (ctx) => {
+  const { id } = ctx.request.params;
+
+  try {
+    if (!id) {
+      throw { status: 400, message: 'id required!' };
+    }
+
+    const deleted = await Task.destroy({ where: { id } });
+    if (!deleted) {
+      throw { status: 404, message: "can't delete the requested task" };
+    }
+
+    ctx.response.status = 200;
+    ctx.response.body = { success: true };
+  } catch (error) {
+    console.error(`Error: ${error.message}`);
+    ctx.response.status = error.status;
+    ctx.response.body = { success: false, message: error.message };
+  }
 };

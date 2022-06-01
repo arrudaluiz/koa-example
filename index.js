@@ -1,21 +1,22 @@
-'use strict';
-
-const http = require('http');
 const Koa = require('koa');
-const luxon = require('luxon');
+const koaBody = require('koa-body');
+const logger = require('koa-logger');
+const Router = require('koa-router');
+
 const routes = require('./routes');
+const server = require('./server');
 
 const app = new Koa();
+const router = new Router();
 const PORT = 3000;
 
-// logger
-app.use(async (ctx, next) => {
-  const date = luxon.DateTime.now().setLocale('pt-BR');
-  await next();
-  console.log(`${date}: ${ctx.method} ${ctx.url}`);
-});
+server();
 
-routes(app);
+routes(router);
 
-http.createServer(app.callback()).listen(PORT);
+app.use(logger());
+app.use(koaBody());
+app.use(router.routes());
+
+app.listen(PORT)
 console.info(`listening at http://localhost:${PORT}`);

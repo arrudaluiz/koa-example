@@ -1,0 +1,87 @@
+{
+  "info": {
+    "_postman_id": "a00527d7-263b-42b4-9f5d-9d208f8ad781",
+    "name": "Tasks (Koa example)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "List tasks",
+      "id": "2c421960-d847-4455-b36b-f84e8854abe3",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{base_url}}/tasks"
+      },
+      "response": []
+    },
+    {
+      "name": "Read a task",
+      "id": "1202940b-58fb-4307-b83f-910f149d6a0d",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{base_url}}/tasks/1"
+      },
+      "response": []
+    },
+    {
+      "name": "Create a task",
+      "id": "87161c77-21c4-4298-823d-9e538f2662ec",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"text\": \"Descrição da tarefa\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "{{base_url}}/tasks"
+      },
+      "response": []
+    },
+    {
+      "name": "Update a task",
+      "id": "b9be2b87-39ad-40e3-bbd9-516a397954e2",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"status\": \"done\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "{{base_url}}/tasks/2"
+      },
+      "response": []
+    },
+    {
+      "name": "Clear done tasks",
+      "id": "abba3993-89c4-4bfa-9675-8b336f5d5e0f",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": "{{base_url}}/tasks"
+      },
+      "response": []
+    },
+    {
+      "name": "Delete a task",
+      "id": "5e104396-742c-45fb-b7f4-6865a391eaf3",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": "{{base_url}}/tasks/1"
+      },
+      "response": []
+    }
+  ]
+}
