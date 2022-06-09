@@ -1,4 +1,3 @@
-const db = require('../common/db');
 const Task = require('../models/task');
 
 const taskStatus = {
@@ -72,7 +71,6 @@ exports.update = async (ctx) => {
   const { text, status } = ctx.request.body;
 
   try {
-    console.log(status);
     if (!id) {
       throw { status: 400, message: 'id required!' };
     }

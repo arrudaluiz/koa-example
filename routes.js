@@ -1,10 +1,10 @@
 const task = require('./controllers/task');
 
-module.exports = (app) => {
-  app.get('/tasks', task.list);
-  app.get('/tasks/:id', task.read);
-  app.post('/tasks', task.create);
-  app.put('/tasks/:id', task.update);
-  app.del('/tasks', task.clear);
-  app.del('/tasks/:id', task.delete);
+module.exports = (router) => {
+  router.get('/tasks', task.list);
+  router.get('/tasks/:id', task.read);
+  router.post('/tasks', task.create);
+  router.put('/tasks/:id', task.update);
+  router.del('/tasks', task.clear);
+  router.del('/tasks/:id', task.delete);
 };

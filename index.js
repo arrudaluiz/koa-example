@@ -11,12 +11,12 @@ const router = new Router();
 const PORT = 3000;
 
 server();
-
 routes(router);
 
 app.use(logger());
 app.use(koaBody());
 app.use(router.routes());
 
-app.listen(PORT)
-console.info(`listening at http://localhost:${PORT}`);
+app.listen(PORT, function() {
+  console.info(`listening at http://localhost:${PORT}`);
+});

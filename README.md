@@ -13,7 +13,25 @@ npm install 7.6
 npm i koa
 ```
 
-## Rodar exemplo
+## Exemplo desenvolvido: Lista de tarefas
+
+### Middlewares utilizados
+
+#### koa-logger:
+
+É um registrador de _logs_ de servidor estilizado por padrão.
+
+#### koa-body:
+
+Utilizado para lidar com as requisições do tipo `application/json` feitas pelas rotas _POST_ e _PUT_ deste exemplo, realizando a conversão do objeto de contexto e posibilitando a recuperação do corpo da requisição através do atributo `ctx.request.body`.
+
+#### koa-router:
+
+Utilizado para criar os métodos dos verbos _http_ que chamam os métodos de controle atribuídos às rotas com o recurso e verbo equivalentes.
+
+Exemplo: o método de controle `task.list` é chamado ao ser requisitado o recurso `/tasks` com o verbo _GET_, enquanto `task.create` é chamado requisitando o mesmo recurso `/tasks` mas com o verbo _POST_.
+
+### Como executar
 
 ```bash
 # instalar dependências
@@ -23,4 +41,6 @@ npm install
 npm run dev
 ```
 
-Obs.: as rotas podem ser importadas no Postman com o arquio `postman.json`.
+> Obs.: as rotas podem ser importadas no Postman com o arquio `postman.json`.
+
+Documentação: https://koajs.com/
